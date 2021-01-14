@@ -315,7 +315,22 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn set_output_panic() {
+    fn set_output_panic_16() {
+        let mut mux = CD74HC4067 {
+            pin_0: DumbPin,
+            pin_1: DumbPin,
+            pin_2: DumbPin,
+            pin_3: DumbPin,
+            pin_enable: DumbPin,
+            state: PhantomData::<DisabledState>,
+        };
+
+        let _unreachable_result = mux.set_output_active(16);
+    }
+
+    #[test]
+    #[should_panic]
+    fn set_output_panic_20() {
         let mut mux = CD74HC4067 {
             pin_0: DumbPin,
             pin_1: DumbPin,
