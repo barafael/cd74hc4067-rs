@@ -12,9 +12,17 @@ keywords = [
 ]
 license = "MIT"
 name = "cd74hc4067"
-repository = "https://github.com/barafael/CD74HC4067"
-version = "0.1.0"
+repository = "https://github.com/barafael/cd74hc4067"
+homepage = "https://github.com/barafael/cd74hc4067"
+readme = "README.md"
+exclude = [
+    "coverage.pdf",
+    ".github/workflows/rust.yml",
+    ".gitignore",
+]
+
 edition = "2018"
+version = "0.1.0"
 
 [dependencies]
 embedded-hal = "0.2"
