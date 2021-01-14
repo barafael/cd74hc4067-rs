@@ -153,14 +153,27 @@ where
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     use embedded_hal_mock::pin::{
         Mock as PinMock, State as PinState, Transaction as PinTransaction,
     };
 
-    use super::*;
+    struct DumbPin;
+    impl OutputPin for DumbPin {
+        type Error = ();
+
+        fn set_low(&mut self) -> Result<(), Self::Error> {
+            Ok(())
+        }
+
+        fn set_high(&mut self) -> Result<(), Self::Error> {
+            Ok(())
+        }
+    }
 
     #[test]
-    fn test_make_mux() {
+    fn make_mux() {
         let pin_0 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
         let pin_1 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
         let pin_2 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
@@ -180,7 +193,7 @@ mod tests {
     }
 
     #[test]
-    fn test_enable() {
+    fn enable() {
         let pin_0 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
         let pin_1 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
         let pin_2 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
@@ -207,7 +220,7 @@ mod tests {
     }
 
     #[test]
-    fn test_set_output_to_9() {
+    fn set_output_to_9() {
         let pin_0 = PinMock::new(&[PinTransaction::set(PinState::High)]);
         let pin_1 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
         let pin_2 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
@@ -236,7 +249,7 @@ mod tests {
     }
 
     #[test]
-    fn test_set_output_to_6() {
+    fn set_output_to_6() {
         let pin_0 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
         let pin_1 = PinMock::new(&[PinTransaction::set(PinState::High)]);
         let pin_2 = PinMock::new(&[PinTransaction::set(PinState::High)]);
@@ -265,7 +278,7 @@ mod tests {
     }
 
     #[test]
-    fn test_set_output_to_10() {
+    fn set_output_to_10() {
         let pin_0 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
         let pin_1 = PinMock::new(&[PinTransaction::set(PinState::High)]);
         let pin_2 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
@@ -291,5 +304,28 @@ mod tests {
         pin_2.done();
         pin_3.done();
         pin_enable.done();
+    }
+
+    #[test]
+    #[should_panic]
+    fn set_output_panic() {
+
+        let pin_0 = DumbPin;
+        let pin_1 = DumbPin;
+        let pin_2 = DumbPin;
+        let pin_3 = DumbPin;
+
+        let pin_enable = DumbPin;
+
+        let mut mux = CD74HC4067 {
+            pin_0,
+            pin_1,
+            pin_2,
+            pin_3,
+            pin_enable,
+            state: PhantomData::<DisabledState>,
+        };
+
+        let _unreachable_result = mux.set_output_active(20);
     }
 }
