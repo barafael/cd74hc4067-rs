@@ -13,11 +13,12 @@
 use core::marker::PhantomData;
 
 /// Errors of this crate
-// TODO Error<E>
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub enum Error {
+pub enum Error<P: OutputPin, E: OutputPin> {
     /// Error setting a pin
-    PinError,
+    SelectPinError(P::Error),
+    /// Error enabling/disabling
+    EnablePinError(E::Error),
 }
 
 struct EnabledState;
@@ -28,40 +29,40 @@ use embedded_hal as hal;
 use hal::digital::v2::OutputPin;
 
 /// A structure representing the 4 input pins and pin_enable pin
-pub struct CD74HC4067<A, B, C, D, E, State> {
-    pin_0: A,
-    pin_1: B,
-    pin_2: C,
-    pin_3: D,
+pub struct CD74HC4067<P, E, State> {
+    pin_0: P,
+    pin_1: P,
+    pin_2: P,
+    pin_3: P,
     pin_enable: E,
     state: PhantomData<State>,
 }
 
-impl<A, B, C, D, E> CD74HC4067<A, B, C, D, E, DisabledState>
+impl<P, E> CD74HC4067<P, E, DisabledState>
 where
-    A: OutputPin,
-    B: OutputPin,
-    C: OutputPin,
-    D: OutputPin,
+    P: OutputPin,
+    P: OutputPin,
+    P: OutputPin,
+    P: OutputPin,
     E: OutputPin,
 {
     /// Create a new CD74HC4067 structure by passing in 5 GPIOs implementing the
     /// `OutputPin` trait for `a`, `b`, `c`, `d`
     /// Mux is initially disabled, and all select pins are set low, selecting channel 0.
     pub fn new(
-        mut pin_0: A,
-        mut pin_1: B,
-        mut pin_2: C,
-        mut pin_3: D,
+        mut pin_0: P,
+        mut pin_1: P,
+        mut pin_2: P,
+        mut pin_3: P,
         mut pin_enable: E,
-    ) -> Result<Self, Error> {
+    ) -> Result<Self, Error<P, E>> {
         // Disable the mux
-        pin_enable.set_high().map_err(|_| Error::PinError)?;
+        pin_enable.set_high().map_err(Error::EnablePinError)?;
         // Set to output 0
-        pin_0.set_low().map_err(|_| Error::PinError)?;
-        pin_1.set_low().map_err(|_| Error::PinError)?;
-        pin_2.set_low().map_err(|_| Error::PinError)?;
-        pin_3.set_low().map_err(|_| Error::PinError)?;
+        pin_0.set_low().map_err(Error::SelectPinError)?;
+        pin_1.set_low().map_err(Error::SelectPinError)?;
+        pin_2.set_low().map_err(Error::SelectPinError)?;
+        pin_3.set_low().map_err(Error::SelectPinError)?;
 
         Ok(Self {
             pin_0,
@@ -74,7 +75,7 @@ where
     }
 
     /// Release the 5 GPIOs previously occupied
-    pub fn release(self) -> (A, B, C, D, E) {
+    pub fn release(self) -> (P, P, P, P, E) {
         (
             self.pin_0,
             self.pin_1,
@@ -85,8 +86,9 @@ where
     }
 
     /// Enable the mux display by pulling `pin_enable` low
-    pub fn enable(mut self) -> Result<CD74HC4067<A, B, C, D, E, EnabledState>, Error> {
-        self.pin_enable.set_low().map_err(|_| Error::PinError)?;
+    /// If Error::EnablePinError occurs, the struct is dropped.
+    pub fn enable(mut self) -> Result<CD74HC4067<P, E, EnabledState>, Error<P, E>> {
+        self.pin_enable.set_low().map_err(Error::EnablePinError)?;
         Ok(CD74HC4067 {
             pin_0: self.pin_0,
             pin_1: self.pin_1,
@@ -98,45 +100,46 @@ where
     }
 
     /// Enable output `n`. `n` must be between 0 and 15 inclusive.
-    pub fn set_output_active(&mut self, n: u8) -> Result<(), Error> {
+    /// If a SelectPinError occurs, the select is left in a possibly unwanted state, but it is disabled here.
+    pub fn set_output_active(&mut self, n: u8) -> Result<(), Error<P, E>> {
         assert!(n < 16);
         let is_bit_set = |b: u8| -> bool { n & (1 << b) != 0 };
 
         if is_bit_set(0) {
-            self.pin_0.set_high().map_err(|_| Error::PinError)?;
+            self.pin_0.set_high().map_err(Error::SelectPinError)?;
         } else {
-            self.pin_0.set_low().map_err(|_| Error::PinError)?;
+            self.pin_0.set_low().map_err(Error::SelectPinError)?;
         }
         if is_bit_set(1) {
-            self.pin_1.set_high().map_err(|_| Error::PinError)?;
+            self.pin_1.set_high().map_err(Error::SelectPinError)?;
         } else {
-            self.pin_1.set_low().map_err(|_| Error::PinError)?;
+            self.pin_1.set_low().map_err(Error::SelectPinError)?;
         }
         if is_bit_set(2) {
-            self.pin_2.set_high().map_err(|_| Error::PinError)?;
+            self.pin_2.set_high().map_err(Error::SelectPinError)?;
         } else {
-            self.pin_2.set_low().map_err(|_| Error::PinError)?;
+            self.pin_2.set_low().map_err(Error::SelectPinError)?;
         }
         if is_bit_set(3) {
-            self.pin_3.set_high().map_err(|_| Error::PinError)?;
+            self.pin_3.set_high().map_err(Error::SelectPinError)?;
         } else {
-            self.pin_3.set_low().map_err(|_| Error::PinError)?;
+            self.pin_3.set_low().map_err(Error::SelectPinError)?;
         }
         Ok(())
     }
 }
 
-impl<A, B, C, D, E> CD74HC4067<A, B, C, D, E, EnabledState>
+impl<P, E> CD74HC4067<P, E, EnabledState>
 where
-    A: OutputPin,
-    B: OutputPin,
-    C: OutputPin,
-    D: OutputPin,
+    P: OutputPin,
+    P: OutputPin,
+    P: OutputPin,
+    P: OutputPin,
     E: OutputPin,
 {
     /// Disable the mux display by pulling `pin_enable` high
-    pub fn disable(mut self) -> Result<CD74HC4067<A, B, C, D, E, DisabledState>, Error> {
-        self.pin_enable.set_high().map_err(|_| Error::PinError)?;
+    pub fn disable(mut self) -> Result<CD74HC4067<P, E, DisabledState>, Error<P, E>> {
+        self.pin_enable.set_high().map_err(Error::EnablePinError)?;
         Ok(CD74HC4067 {
             pin_0: self.pin_0,
             pin_1: self.pin_1,
