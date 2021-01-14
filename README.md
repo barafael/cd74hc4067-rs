@@ -15,10 +15,15 @@ In this driver, type-state programming is used to ensure that:
 * The select pins can only be changed while the chip is disabled
 * Once the chip is enabled, it must be disabled before anything can be done to it
 
-The tests for the library also show a basic example of how to use embedded-hal-mock to test drivers when the hardware isn't there yet :)
-Note, the test coverage is 100% line coverage. This excludes the calls to PhantomData::<...>, as they are excluded from the compiled binary by design.
-
 [embedded-hal]: https://github.com/japaric/embedded-hal.git
+
+Testing embedded-hal with mocking
+=============
+
+The tests for the library also show a basic example of how to use embedded-hal-mock to test drivers when the hardware isn't there yet :) or on CI.
+Note, the test coverage is [practically 100% line coverage](tarpaulin-report.html).
+
+The only exception are the calls to PhantomData::<...>, as they are excluded from the compiled binary by design.
 
 License
 -------
