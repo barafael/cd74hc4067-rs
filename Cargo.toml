@@ -9,6 +9,7 @@ description = "A platform agnostic driver to interface with CD74HC4067"
 keywords = [
     "embedded-hal-driver",
     "GPIO",
+    "74HC",
 ]
 license = "MIT"
 name = "cd74hc4067"
@@ -22,7 +23,7 @@ exclude = [
 ]
 
 edition = "2018"
-version = "0.1.0"
+version = "0.2.0"
 
 [dependencies]
 embedded-hal = "0.2"
