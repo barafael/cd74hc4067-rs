@@ -21,8 +21,11 @@ pub enum Error<P: OutputPin, E: OutputPin> {
     EnablePinError(E::Error),
 }
 
-struct EnabledState;
-struct DisabledState;
+/// Enabled state
+pub struct EnabledState;
+
+/// Disabled state
+pub struct DisabledState;
 
 use embedded_hal as hal;
 
@@ -103,6 +106,7 @@ where
     /// If a SelectPinError occurs, the select is left in a possibly unwanted state, but it is disabled here.
     pub fn set_output_active(&mut self, n: u8) -> Result<(), Error<P, E>> {
         assert!(n < 16);
+
         let is_bit_set = |b: u8| -> bool { n & (1 << b) != 0 };
 
         if is_bit_set(0) {
