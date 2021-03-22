@@ -61,7 +61,7 @@ where
     ) -> Result<Self, Error<P, E>> {
         // Disable the mux
         pin_enable.set_high().map_err(Error::EnablePinError)?;
-        // Set to output 0
+
         pin_0.set_low().map_err(Error::SelectPinError)?;
         pin_1.set_low().map_err(Error::SelectPinError)?;
         pin_2.set_low().map_err(Error::SelectPinError)?;
@@ -102,9 +102,9 @@ where
         })
     }
 
-    /// Enable output `n`. `n` must be between 0 and 15 inclusive.
+    /// Enable channel `n` active. `n` must be between 0 and 15 inclusive.
     /// If a SelectPinError occurs, the select is left in a possibly unwanted state, but it is disabled here.
-    pub fn set_output_active(&mut self, n: u8) -> Result<(), Error<P, E>> {
+    pub fn set_channel_active(&mut self, n: u8) -> Result<(), Error<P, E>> {
         assert!(n < 16);
 
         let is_bit_set = |b: u8| -> bool { n & (1 << b) != 0 };
@@ -211,7 +211,7 @@ mod tests {
     }
 
     #[test]
-    fn set_output_to_9() {
+    fn set_channel_9() {
         let pin_0 = PinMock::new(&[PinTransaction::set(PinState::High)]);
         let pin_1 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
         let pin_2 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
@@ -228,7 +228,7 @@ mod tests {
             state: PhantomData::<DisabledState>,
         };
 
-        mux.set_output_active(9).unwrap();
+        mux.set_channel_active(9).unwrap();
 
         let (mut pin_0, mut pin_1, mut pin_2, mut pin_3, mut pin_enable) = mux.release();
 
@@ -240,7 +240,7 @@ mod tests {
     }
 
     #[test]
-    fn set_output_to_6() {
+    fn set_channel_6() {
         let pin_0 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
         let pin_1 = PinMock::new(&[PinTransaction::set(PinState::High)]);
         let pin_2 = PinMock::new(&[PinTransaction::set(PinState::High)]);
@@ -257,7 +257,7 @@ mod tests {
             state: PhantomData::<DisabledState>,
         };
 
-        mux.set_output_active(6).unwrap();
+        mux.set_channel_active(6).unwrap();
 
         let (mut pin_0, mut pin_1, mut pin_2, mut pin_3, mut pin_enable) = mux.release();
 
@@ -269,7 +269,7 @@ mod tests {
     }
 
     #[test]
-    fn set_output_to_10() {
+    fn set_channel_10() {
         let pin_0 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
         let pin_1 = PinMock::new(&[PinTransaction::set(PinState::High)]);
         let pin_2 = PinMock::new(&[PinTransaction::set(PinState::Low)]);
@@ -286,7 +286,7 @@ mod tests {
             state: PhantomData::<DisabledState>,
         };
 
-        mux.set_output_active(10).unwrap();
+        mux.set_channel_active(10).unwrap();
 
         let (mut pin_0, mut pin_1, mut pin_2, mut pin_3, mut pin_enable) = mux.release();
 
@@ -319,7 +319,7 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn set_output_panic_16() {
+    fn set_channel_panic_16() {
         let mut mux = CD74HC4067 {
             pin_0: DumbPin,
             pin_1: DumbPin,
@@ -329,12 +329,12 @@ mod tests {
             state: PhantomData::<DisabledState>,
         };
 
-        let _unreachable_result = mux.set_output_active(16);
+        let _unreachable_result = mux.set_channel_active(16);
     }
 
     #[test]
     #[should_panic]
-    fn set_output_panic_20() {
+    fn set_channel_panic_20() {
         let mut mux = CD74HC4067 {
             pin_0: DumbPin,
             pin_1: DumbPin,
@@ -344,6 +344,6 @@ mod tests {
             state: PhantomData::<DisabledState>,
         };
 
-        let _unreachable_result = mux.set_output_active(20);
+        let _unreachable_result = mux.set_channel_active(20);
     }
 }
