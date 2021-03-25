@@ -26,7 +26,7 @@ edition = "2018"
 version = "0.2.0"
 
 [dependencies]
-embedded-hal = "0.2"
+embedded-hal = "0.2.4"
 
 [dev-dependencies]
 embedded-hal-mock = "0.7.2"
