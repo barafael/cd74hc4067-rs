@@ -23,7 +23,7 @@ exclude = [
 ]
 
 edition = "2018"
-version = "0.2.0"
+version = "0.3.0"
 
 [dependencies]
 embedded-hal = "0.2.4"

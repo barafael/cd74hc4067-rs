@@ -1,4 +1,4 @@
-//! A driver for generic GPIO driven CD74HC4067
+//! A driver for generic GPIO driven Cd74hc4067
 //!
 //! This driver was built using [`embedded-hal`] traits.
 //!
@@ -32,7 +32,7 @@ use embedded_hal as hal;
 use hal::digital::v2::OutputPin;
 
 /// A structure representing the 4 input pins and pin_enable pin
-pub struct CD74HC4067<P, E, State> {
+pub struct Cd74hc4067<P, E, State> {
     pin_0: P,
     pin_1: P,
     pin_2: P,
@@ -41,7 +41,7 @@ pub struct CD74HC4067<P, E, State> {
     state: PhantomData<State>,
 }
 
-impl<P, E> CD74HC4067<P, E, DisabledState>
+impl<P, E> Cd74hc4067<P, E, DisabledState>
 where
     P: OutputPin,
     P: OutputPin,
@@ -49,7 +49,7 @@ where
     P: OutputPin,
     E: OutputPin,
 {
-    /// Create a new CD74HC4067 structure by passing in 5 GPIOs implementing the
+    /// Create a new Cd74hc4067 structure by passing in 5 GPIOs implementing the
     /// `OutputPin` trait for `a`, `b`, `c`, `d`
     /// Mux is initially disabled, and all select pins are set low, selecting channel 0.
     pub fn new(
@@ -90,9 +90,9 @@ where
 
     /// Enable the mux display by pulling `pin_enable` low
     /// If Error::EnablePinError occurs, the struct is dropped.
-    pub fn enable(mut self) -> Result<CD74HC4067<P, E, EnabledState>, Error<P, E>> {
+    pub fn enable(mut self) -> Result<Cd74hc4067<P, E, EnabledState>, Error<P, E>> {
         self.pin_enable.set_low().map_err(Error::EnablePinError)?;
-        Ok(CD74HC4067 {
+        Ok(Cd74hc4067 {
             pin_0: self.pin_0,
             pin_1: self.pin_1,
             pin_2: self.pin_2,
@@ -133,7 +133,7 @@ where
     }
 }
 
-impl<P, E> CD74HC4067<P, E, EnabledState>
+impl<P, E> Cd74hc4067<P, E, EnabledState>
 where
     P: OutputPin,
     P: OutputPin,
@@ -142,9 +142,9 @@ where
     E: OutputPin,
 {
     /// Disable the mux display by pulling `pin_enable` high
-    pub fn disable(mut self) -> Result<CD74HC4067<P, E, DisabledState>, Error<P, E>> {
+    pub fn disable(mut self) -> Result<Cd74hc4067<P, E, DisabledState>, Error<P, E>> {
         self.pin_enable.set_high().map_err(Error::EnablePinError)?;
-        Ok(CD74HC4067 {
+        Ok(Cd74hc4067 {
             pin_0: self.pin_0,
             pin_1: self.pin_1,
             pin_2: self.pin_2,
@@ -174,7 +174,7 @@ mod tests {
 
         let pin_enable = PinMock::new(&expectations);
 
-        let mux = CD74HC4067::new(pin_0, pin_1, pin_2, pin_3, pin_enable).unwrap();
+        let mux = Cd74hc4067::new(pin_0, pin_1, pin_2, pin_3, pin_enable).unwrap();
         let (mut pin_0, mut pin_1, mut pin_2, mut pin_3, mut pin_enable) = mux.release();
         pin_enable.done();
         pin_0.done();
@@ -198,7 +198,7 @@ mod tests {
 
         let pin_enable = PinMock::new(&expectations);
 
-        let mux = CD74HC4067::new(pin_0, pin_1, pin_2, pin_3, pin_enable).unwrap();
+        let mux = Cd74hc4067::new(pin_0, pin_1, pin_2, pin_3, pin_enable).unwrap();
         let enabled_mux = mux.enable().unwrap();
         let mux = enabled_mux.disable().unwrap();
 
@@ -219,7 +219,7 @@ mod tests {
 
         let pin_enable = PinMock::new(&[]);
 
-        let mut mux = CD74HC4067 {
+        let mut mux = Cd74hc4067 {
             pin_0,
             pin_1,
             pin_2,
@@ -248,7 +248,7 @@ mod tests {
 
         let pin_enable = PinMock::new(&[]);
 
-        let mut mux = CD74HC4067 {
+        let mut mux = Cd74hc4067 {
             pin_0,
             pin_1,
             pin_2,
@@ -277,7 +277,7 @@ mod tests {
 
         let pin_enable = PinMock::new(&[]);
 
-        let mut mux = CD74HC4067 {
+        let mut mux = Cd74hc4067 {
             pin_0,
             pin_1,
             pin_2,
@@ -307,7 +307,7 @@ mod tests {
 
         let pin_enable = PinMock::new(&[]);
 
-        let mut mux = CD74HC4067 {
+        let mut mux = Cd74hc4067 {
             pin_0,
             pin_1,
             pin_2,
@@ -329,7 +329,7 @@ mod tests {
 
         let pin_enable = PinMock::new(&[]);
 
-        let mut mux = CD74HC4067 {
+        let mut mux = Cd74hc4067 {
             pin_0,
             pin_1,
             pin_2,
