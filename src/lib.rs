@@ -297,35 +297,22 @@ mod tests {
         pin_enable.done();
     }
 
-    struct DumbPin;
-    impl OutputPin for DumbPin {
-        type Error = ();
-
-        fn set_low(&mut self) -> Result<(), Self::Error> {
-            Ok(())
-        }
-
-        fn set_high(&mut self) -> Result<(), Self::Error> {
-            Ok(())
-        }
-    }
-
-    #[test]
-    fn dumb_pin_does_nothing() {
-        let mut d = DumbPin;
-        assert!(d.set_high().is_ok());
-        assert!(d.set_low().is_ok());
-    }
-
     #[test]
     #[should_panic]
     fn set_channel_panic_16() {
+        let pin_0 = PinMock::new(&[]);
+        let pin_1 = PinMock::new(&[]);
+        let pin_2 = PinMock::new(&[]);
+        let pin_3 = PinMock::new(&[]);
+
+        let pin_enable = PinMock::new(&[]);
+
         let mut mux = CD74HC4067 {
-            pin_0: DumbPin,
-            pin_1: DumbPin,
-            pin_2: DumbPin,
-            pin_3: DumbPin,
-            pin_enable: DumbPin,
+            pin_0,
+            pin_1,
+            pin_2,
+            pin_3,
+            pin_enable,
             state: PhantomData::<DisabledState>,
         };
 
@@ -335,12 +322,19 @@ mod tests {
     #[test]
     #[should_panic]
     fn set_channel_panic_20() {
+        let pin_0 = PinMock::new(&[]);
+        let pin_1 = PinMock::new(&[]);
+        let pin_2 = PinMock::new(&[]);
+        let pin_3 = PinMock::new(&[]);
+
+        let pin_enable = PinMock::new(&[]);
+
         let mut mux = CD74HC4067 {
-            pin_0: DumbPin,
-            pin_1: DumbPin,
-            pin_2: DumbPin,
-            pin_3: DumbPin,
-            pin_enable: DumbPin,
+            pin_0,
+            pin_1,
+            pin_2,
+            pin_3,
+            pin_enable,
             state: PhantomData::<DisabledState>,
         };
 
