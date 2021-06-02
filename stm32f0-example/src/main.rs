@@ -59,26 +59,32 @@ fn main() -> ! {
             Pin<Output<PushPull>>,
             DisabledState,
         >| {
-            match hc.set_channel_active(pin as u8) {
-                Ok(_) => {}
-                Err(_) => {}
+            if hc.set_channel_active(pin as u8).is_err() {
+                loop {
+                    continue;
+                }
             }
             let enabled = match hc.enable() {
                 Ok(d) => d,
-                Err(_) => loop {},
+                Err(_) => loop {
+                    continue;
+                },
             };
             delay.delay_ms(duration);
-            let disabled = match enabled.disable() {
+            match enabled.disable() {
                 Ok(d) => d,
-                Err(_) => loop {},
-            };
-            disabled
+                Err(_) => loop {
+                    continue;
+                },
+            }
         };
 
         let mut disabled = match cd74hc4067::Cd74hc4067::new(pin_0, pin_1, pin_2, pin_3, pin_enable)
         {
             Ok(x) => x,
-            Err(_) => loop {},
+            Err(_) => loop {
+                continue;
+            },
         };
 
         let mut rng = RNG::<WyRand, u8>::new(0xDEADBEEF);
@@ -89,5 +95,7 @@ fn main() -> ! {
             disabled = on_for(delay_time_ms, generated, disabled);
         }
     }
-    loop {}
+    loop {
+        continue;
+    }
 }
