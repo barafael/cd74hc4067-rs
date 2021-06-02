@@ -13,8 +13,8 @@ keywords = [
 ]
 license = "MIT"
 name = "cd74hc4067"
-repository = "https://github.com/barafael/cd74hc4067"
-homepage = "https://github.com/barafael/cd74hc4067"
+repository = "https://github.com/barafael/cd74hc406-rs7"
+homepage = "https://github.com/barafael/cd74hc4067-rs"
 readme = "README.md"
 exclude = [
     "coverage.pdf",
