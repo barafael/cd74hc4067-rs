@@ -21,6 +21,7 @@ panic-rtt-target = { version = "0.1.1", features = ["cortex-m"], optional = true
 stm32f0xx-hal = { version = "0.17.1", features = ["rt", "stm32f072"] }
 cd74hc4067 = { path = "../cd74hc4067/" }
 picorand = "0.1.1"
+debugless-unwrap = "0.0.4"
 
 [profile.release]
 opt-level = 'z'  # Optimize for size.

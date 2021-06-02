@@ -1,6 +1,8 @@
 #![no_std]
 #![no_main]
 
+use debugless_unwrap::DebuglessUnwrap;
+
 use panic_halt as _;
 
 #[cfg(feature = "println_debug")]
@@ -59,33 +61,16 @@ fn main() -> ! {
             Pin<Output<PushPull>>,
             DisabledState,
         >| {
-            if hc.set_channel_active(pin as u8).is_err() {
-                loop {
-                    continue;
-                }
-            }
-            let enabled = match hc.enable() {
-                Ok(d) => d,
-                Err(_) => loop {
-                    continue;
-                },
-            };
+            hc.set_channel_active(pin as u8).debugless_unwrap();
+            let enabled = hc.enable().debugless_unwrap();
+
             delay.delay_ms(duration);
-            match enabled.disable() {
-                Ok(d) => d,
-                Err(_) => loop {
-                    continue;
-                },
-            }
+
+            enabled.disable().debugless_unwrap()
         };
 
-        let mut disabled = match cd74hc4067::Cd74hc4067::new(pin_0, pin_1, pin_2, pin_3, pin_enable)
-        {
-            Ok(x) => x,
-            Err(_) => loop {
-                continue;
-            },
-        };
+        let mut disabled =
+            cd74hc4067::Cd74hc4067::new(pin_0, pin_1, pin_2, pin_3, pin_enable).debugless_unwrap();
 
         let mut rng = RNG::<WyRand, u8>::new(0xDEADBEEF);
 
