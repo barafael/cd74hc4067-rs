@@ -19,7 +19,7 @@ embedded-hal = "0.2.4"
 rtt-target = { version = "0.2.2", features = ["cortex-m"], optional = true }
 panic-rtt-target = { version = "0.1.1", features = ["cortex-m"], optional = true }
 stm32f0xx-hal = { version = "0.17.1", features = ["rt", "stm32f072"] }
-cd74hc4067 = { path = "../../" }
+cd74hc4067 = { path = "../cd74hc4067/" }
 picorand = "0.1.1"
 
 [profile.release]

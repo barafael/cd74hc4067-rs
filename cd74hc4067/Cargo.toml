@@ -1,0 +1,32 @@
+[package]
+authors = ["Rafael Bachmann <rafael.bachmann.93@gmail.com>"]
+categories = [
+    "embedded",
+    "hardware-support",
+    "no-std",
+]
+description = "A platform agnostic driver to interface with CD74HC4067"
+keywords = [
+    "embedded-hal-driver",
+    "GPIO",
+    "74HC",
+]
+license = "MIT"
+name = "cd74hc4067"
+repository = "https://github.com/barafael/cd74hc4067"
+homepage = "https://github.com/barafael/cd74hc4067"
+readme = "README.md"
+exclude = [
+    "coverage.pdf",
+    ".github/workflows/rust.yml",
+    ".gitignore",
+]
+
+edition = "2018"
+version = "0.3.0"
+
+[dependencies]
+embedded-hal = "0.2.4"
+
+[dev-dependencies]
+embedded-hal-mock = "0.7.2"

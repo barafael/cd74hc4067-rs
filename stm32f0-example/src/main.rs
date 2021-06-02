@@ -54,7 +54,7 @@ fn main() -> ! {
 
         let mut on_for = |duration: u32,
                           pin: u8,
-                          mut hc: CD74HC4067<
+                          mut hc: Cd74hc4067<
             Pin<Output<PushPull>>,
             Pin<Output<PushPull>>,
             DisabledState,
@@ -75,7 +75,7 @@ fn main() -> ! {
             disabled
         };
 
-        let mut disabled = match cd74hc4067::CD74HC4067::new(pin_0, pin_1, pin_2, pin_3, pin_enable)
+        let mut disabled = match cd74hc4067::Cd74hc4067::new(pin_0, pin_1, pin_2, pin_3, pin_enable)
         {
             Ok(x) => x,
             Err(_) => loop {},
