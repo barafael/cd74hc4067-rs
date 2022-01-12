@@ -15,7 +15,7 @@ Testing embedded-hal with mocking
 =============
 
 The tests for the library also show a basic example of how to use embedded-hal-mock to test drivers when the hardware isn't there yet :) or on CI.
-Note, the test coverage is [practically 100% line coverage](coverage.pdf).
+Note, the test coverage is [practically 100% line coverage](https://github.com/barafael/cd74hc4067-rs/blob/main/cd74hc4067/coverage.pdf).
 
 The only exception are the calls to PhantomData::<...>, as they are excluded from the compiled binary by design.
 
