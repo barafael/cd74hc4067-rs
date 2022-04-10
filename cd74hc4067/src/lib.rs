@@ -22,9 +22,11 @@ pub enum Error<P: OutputPin, E: OutputPin> {
 }
 
 /// Enabled state
+#[cfg_attr(test, derive(Debug))]
 pub struct EnabledState;
 
 /// Disabled state
+#[cfg_attr(test, derive(Debug))]
 pub struct DisabledState;
 
 use embedded_hal as hal;
@@ -32,6 +34,7 @@ use embedded_hal as hal;
 use hal::digital::v2::OutputPin;
 
 /// A structure representing the 4 input pins and pin_enable pin
+#[cfg_attr(test, derive(Debug))]
 pub struct Cd74hc4067<P, E, State> {
     pin_0: P,
     pin_1: P,
@@ -58,14 +61,21 @@ where
         mut pin_2: P,
         mut pin_3: P,
         mut pin_enable: E,
-    ) -> Result<Self, Error<P, E>> {
-        // Disable the mux
-        pin_enable.set_high().map_err(Error::EnablePinError)?;
+    ) -> Result<Self, (Error<P, E>, (P, P, P, P, E))> {
+        let mut init = || {
+            pin_enable.set_high().map_err(Error::EnablePinError)?;
 
-        pin_0.set_low().map_err(Error::SelectPinError)?;
-        pin_1.set_low().map_err(Error::SelectPinError)?;
-        pin_2.set_low().map_err(Error::SelectPinError)?;
-        pin_3.set_low().map_err(Error::SelectPinError)?;
+            pin_0.set_low().map_err(Error::SelectPinError)?;
+            pin_1.set_low().map_err(Error::SelectPinError)?;
+            pin_2.set_low().map_err(Error::SelectPinError)?;
+            pin_3.set_low().map_err(Error::SelectPinError)?;
+
+            Ok(())
+        };
+
+        if let Err(e) = init() {
+            return Err((e, (pin_0, pin_1, pin_2, pin_3, pin_enable)));
+        }
 
         Ok(Self {
             pin_0,
@@ -89,9 +99,12 @@ where
     }
 
     /// Enable the mux display by pulling `pin_enable` low
-    /// If Error::EnablePinError occurs, the struct is dropped.
-    pub fn enable(mut self) -> Result<Cd74hc4067<P, E, EnabledState>, Error<P, E>> {
-        self.pin_enable.set_low().map_err(Error::EnablePinError)?;
+    /// If Error::EnablePinError occurs, the unchanged structure is returned together with the error
+    pub fn enable(mut self) -> Result<Cd74hc4067<P, E, EnabledState>, (Error<P, E>, Self)> {
+        if let Err(e) = self.pin_enable.set_low() {
+            return Err((Error::EnablePinError(e), self));
+        }
+
         Ok(Cd74hc4067 {
             pin_0: self.pin_0,
             pin_1: self.pin_1,
@@ -142,8 +155,11 @@ where
     E: OutputPin,
 {
     /// Disable the mux display by pulling `pin_enable` high
-    pub fn disable(mut self) -> Result<Cd74hc4067<P, E, DisabledState>, Error<P, E>> {
-        self.pin_enable.set_high().map_err(Error::EnablePinError)?;
+    pub fn disable(mut self) -> Result<Cd74hc4067<P, E, DisabledState>, (Error<P, E>, Self)> {
+        if let Err(e) = self.pin_enable.set_high() {
+            return Err((Error::EnablePinError(e), self));
+        }
+
         Ok(Cd74hc4067 {
             pin_0: self.pin_0,
             pin_1: self.pin_1,
