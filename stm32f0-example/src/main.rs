@@ -61,7 +61,7 @@ fn main() -> ! {
             Pin<Output<PushPull>>,
             DisabledState,
         >| {
-            hc.set_channel_active(pin as u8).debugless_unwrap();
+            hc.set_channel_active(pin).debugless_unwrap();
             let enabled = hc.enable().debugless_unwrap();
 
             delay.delay_ms(duration);
