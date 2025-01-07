@@ -1,1 +1,1 @@
-# stm32f0-74hc4067-test
+# stm32f0-74hc4067-example
