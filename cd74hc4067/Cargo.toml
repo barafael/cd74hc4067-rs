@@ -11,7 +11,7 @@ readme = "../readme.md"
 exclude = ["coverage.pdf", ".github/workflows/rust.yml", ".gitignore"]
 
 edition = "2021"
-version = "0.4.0"
+version = "0.4.1"
 
 [dependencies]
 embedded-hal_0_2 = { package = "embedded-hal", version = "0.2.7", optional = true }
