@@ -19,4 +19,6 @@ jobs:
     - name: Run tests
       run: cd cd74hc4067 && cargo test && cd -
     - name: Run build
-      run: rustup target add thumbv6m-none-eabi && cargo build --verbose --target thumbv6m-none-eabi
+      run: cd cd74hc4067 && rustup target add thumbv6m-none-eabi && cargo build --verbose --target thumbv6m-none-eabi
+    - name: Build Example
+      run: cd stm32f0-example && rustup target add thumbv6m-none-eabi && cargo build --verbose --target thumbv6m-none-eabi

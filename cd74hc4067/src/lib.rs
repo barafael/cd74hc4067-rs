@@ -29,9 +29,11 @@ pub struct EnabledState;
 #[cfg_attr(test, derive(Debug))]
 pub struct DisabledState;
 
-use embedded_hal as hal;
+#[cfg(feature = "eh0")]
+use embedded_hal_0_2::digital::v2::OutputPin;
 
-use hal::digital::v2::OutputPin;
+#[cfg(not(feature = "eh0"))]
+use embedded_hal::digital::OutputPin;
 
 /// A structure representing the 4 input pins and pin_enable pin
 #[cfg_attr(test, derive(Debug))]
@@ -175,7 +177,13 @@ where
 mod tests {
     use super::*;
 
-    use embedded_hal_mock::pin::{
+    #[cfg(feature = "eh0")]
+    use embedded_hal_mock::eh0::digital::{
+        Mock as PinMock, State as PinState, Transaction as PinTransaction,
+    };
+
+    #[cfg(not(feature = "eh0"))]
+    use embedded_hal_mock::eh1::digital::{
         Mock as PinMock, State as PinState, Transaction as PinTransaction,
     };
 
