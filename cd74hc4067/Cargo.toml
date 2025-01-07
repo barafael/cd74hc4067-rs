@@ -10,7 +10,7 @@ homepage = "https://github.com/barafael/cd74hc4067-rs"
 readme = "README.md"
 exclude = ["coverage.pdf", ".github/workflows/rust.yml", ".gitignore"]
 
-edition = "2018"
+edition = "2021"
 version = "0.3.0"
 
 [dependencies]

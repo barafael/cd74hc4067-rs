@@ -6,7 +6,7 @@ description = ""
 readme = "README.md"
 license = "MIT License"
 repository = ""
-edition = "2018"
+edition = "2021"
 
 [features]
 println_debug = ["rtt-target", "panic-rtt-target"]
