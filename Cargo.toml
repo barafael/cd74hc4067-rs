@@ -1,6 +1,3 @@
 [workspace]
 
-members = [
-    "cd74hc4067",
-    "stm32f0-example",
-]
+members = ["cd74hc4067", "stm32f0-example"]
