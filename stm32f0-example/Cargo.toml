@@ -1,5 +1,5 @@
 [package]
-name = "stm32f0-74hc4067-test"
+name = "stm32f0-74hc4067-example"
 version = "0.1.0"
 authors = ["Rafael Bachmann <rafael.bachmann.93@gmail.com>"]
 description = ""
@@ -12,17 +12,15 @@ edition = "2021"
 println_debug = ["rtt-target", "panic-rtt-target"]
 
 [dependencies]
-cortex-m = "0.6.3"
-cortex-m-rt = { version = "0.6.10", features = ["device"] }
-panic-halt = "0.2.0"
-embedded-hal = "0.2.4"
-rtt-target = { version = "0.2.2", features = ["cortex-m"], optional = true }
-panic-rtt-target = { version = "0.1.1", features = [
-    "cortex-m",
-], optional = true }
-stm32f0xx-hal = { version = "0.17.1", features = ["rt", "stm32f072"] }
+cortex-m = "0.7.7"
+cortex-m-rt = { version = "0.7.5", features = ["device"] }
+panic-halt = "1"
+embedded-hal = "0.2.7"
+rtt-target = { version = "0.6.1", optional = true }
+panic-rtt-target = { version = "0.2.0", features = [], optional = true }
+stm32f0xx-hal = { version = "0.18.0", features = ["rt", "stm32f072"] }
 cd74hc4067 = { path = "../cd74hc4067/", features = ["eh0"] }
-picorand = "0.1.1"
+picorand = "0.1.2"
 debugless-unwrap = "0.0.4"
 
 [profile.release]
