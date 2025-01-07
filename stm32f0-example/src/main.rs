@@ -16,8 +16,6 @@ use stm32f0xx_hal::{
 
 use cortex_m::{interrupt::free as disable_interrupts, Peripherals};
 
-use panic_halt as _;
-
 use cortex_m_rt::entry;
 
 use stm32f0xx_hal::delay::Delay;
