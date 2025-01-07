@@ -45,7 +45,7 @@ type EnableResult<P, E> =
 type DisableResult<P, E> =
     Result<Cd74hc4067<P, E, DisabledState>, (Error<P, E>, Cd74hc4067<P, E, EnabledState>)>;
 
-/// A structure representing the 4 input pins and pin_enable pin
+/// A structure representing the 4 output pins and `pin_enable` pin
 #[cfg_attr(test, derive(Debug))]
 pub struct Cd74hc4067<P, E, State> {
     pin_0: P,
@@ -58,9 +58,6 @@ pub struct Cd74hc4067<P, E, State> {
 
 impl<P, E> Cd74hc4067<P, E, DisabledState>
 where
-    P: OutputPin,
-    P: OutputPin,
-    P: OutputPin,
     P: OutputPin,
     E: OutputPin,
 {
@@ -112,8 +109,8 @@ where
         )
     }
 
-    /// Enable the mux display by pulling `pin_enable` low
-    /// If Error::EnablePinError occurs, the unchanged structure is returned together with the error
+    /// Enable the mux display by pulling `pin_enable` low.
+    /// If an [`Error::EnablePinError`] occurs, the unchanged structure is returned together with the error.
     pub fn enable(mut self) -> EnableResult<P, E> {
         if let Err(e) = self.pin_enable.set_low() {
             return Err((Error::EnablePinError(e), self));
@@ -130,7 +127,12 @@ where
     }
 
     /// Enable channel `n` active. `n` must be between 0 and 15 inclusive.
-    /// If a SelectPinError occurs, the select is left in a possibly unwanted state, but it is disabled here.
+    ///
+    /// If an [`Error::SelectPinError`] occurs, the select is left in a possibly unwanted state, but it is disabled here.
+    ///
+    /// # Panics
+    ///
+    /// If `n` is out of range, then this function will panic.
     pub fn set_channel_active(&mut self, n: u8) -> Result<(), Error<P, E>> {
         assert!(n < 16);
 
@@ -162,9 +164,6 @@ where
 
 impl<P, E> Cd74hc4067<P, E, EnabledState>
 where
-    P: OutputPin,
-    P: OutputPin,
-    P: OutputPin,
     P: OutputPin,
     E: OutputPin,
 {

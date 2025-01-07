@@ -20,7 +20,7 @@ use cortex_m_rt::entry;
 
 use stm32f0xx_hal::delay::Delay;
 
-use cd74hc4067::*;
+use cd74hc4067::{Cd74hc4067, DisabledState};
 
 use picorand::{WyRand, RNG};
 
@@ -70,7 +70,7 @@ fn main() -> ! {
         let mut disabled =
             cd74hc4067::Cd74hc4067::new(pin_0, pin_1, pin_2, pin_3, pin_enable).debugless_unwrap();
 
-        let mut rng = RNG::<WyRand, u8>::new(0xDEADBEEF);
+        let mut rng = RNG::<WyRand, u8>::new(0xDEAD_BEEF);
 
         let delay_time_ms: u32 = 2000;
         loop {
